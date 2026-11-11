@@ -1062,7 +1062,7 @@ function adm(){HPM=null;document.body.classList.add("adm-on");const nl=allNames(
  h+=`<section class="card"><h2 class="fe-h"><span>پارك (اكتب OFF إن لم تُغطَّ)</span>${FEB("x")}</h2>${ET==="x"?feEd(d,"x"):`<div class="sv">${XL.map(([k,l,t])=>`<div class="t"><b>${l}</b><span>${T(t)}</span>${cellH(d,"x."+k)}</div>`).join("")}</div>`}</section><section class="card"><h2 class="fe-h"><span>پشوو (بهێن ڤەدان)</span>${FEB("off")}</h2>${ET==="off"?feEd(d,"off"):`<div class="offs">${cellH(d,"off")}</div>`}</section>`+offCard(nl);
  h+=`<details class="card" ${PO?"open":""} ontoggle="PO=this.open"><summary class="h2s">📍 نقاط الحراسة (${P.length}) — إضافة ومسح</summary><div class="ap">${P.map((p,j)=>`<div class="arow"><span class="ai" style="flex:1;display:flex;align-items:center">${PI[j]} ${p}</span><button type="button" class="btn" data-pdel="${j}" aria-label="مسح ${p}">🗑 مسح</button></div>`).join("")}<div class="arow"><input id="p-n" class="ai" maxlength="30" placeholder="اسم نقطة جديدة (مثال: نقطة برج)" aria-label="اسم النقطة"><button type="button" class="btn pri" id="p-add">➕ زيادة نقطة</button></div><p class="hint">مسح النقطة يحذفها من كل الأسابيع والاستثناءات مع أسماء الحراس المعيّنين عليها — اضغط حفظ لتثبيت التغيير.</p></div></details>`;
 h+=`<details class="card" ${NO?"open":""} ontoggle="NO=this.open"><summary class="h2s">👥 إدارة الأسماء (${nl.length}) — إضافة وتعديل وحذف</summary><div class="ap"><div class="arow"><input id="n-new" list="names" class="ai" placeholder="اسم جديد" aria-label="اسم جديد" style="max-width:200px"><label>نقطة الحراسة<select data-nf="pt" aria-label="نقطة الحراسة">${NPO()}</select></label><label>الوردية<select data-nf="sh" aria-label="الوردية">${SH.map(x=>`<option value="${x[0]}"${NF.sh===x[0]?" selected":""}>${x[1]}</option>`).join("")}</select></label><label>يُطبَّق على<select data-nf="sc" aria-label="نطاق التطبيق">${NSC()}</select></label><button type="button" class="btn pri" id="n-add">+ إضافة وتعيين</button></div><div class="arow"><b>🔁 تبديل:</b><input id="sw-a" list="names" class="ai" placeholder="الاسم الأول" aria-label="الاسم الأول" style="max-width:170px"><span aria-hidden="true">⇄</span><input id="sw-b" list="names" class="ai" placeholder="الاسم الثاني" aria-label="الاسم الثاني" style="max-width:170px"><button type="button" class="btn" id="n-swap">تبديل</button></div><div class="offs">${nl.map(n=>`<span class="c2">${n}<button type="button" data-rn="${n}" aria-label="تعديل ${n}">✏️</button><button type="button" data-dn="${n}" aria-label="حذف ${n}">🗑</button></span>`).join("")}</div><p class="hint">التعديل والحذف يُطبَّقان على كل الأيام والأسابيع. «إضافة وتعيين»: يُنشئ الاسم ويضعه مباشرة على نقطة حراسة (ويُنقل من مكانه القديم في نفس اليوم). «تبديل»: يبدّل مكان اسمين ضمن النطاق المختار. اضغط «حفظ» لتثبيت التغييرات.</p></div></details>`;
- h+='<div class="arow end"><span id="amsg" class="hint" role="status"></span><button class="btn" id="a-x" type="button">إلغاء</button><button class="btn pri" id="a-save" type="button">'+(SA?"💾 حفظ ونشر مباشر على الموقع":"💾 حفظ ونشر")+'</button></div></div></section>';
+ h+='<div class="arow end"><span id="amsg" class="hint" role="status"></span><button class="btn" id="a-x" type="button">إلغاء</button><button class="btn pri" id="a-save" type="button">'+(SA?"💾 حفظ ونشر مباشر على الموقع":"💾 حفظ ونشر")+'</button>'+(SA?"":'<button class="btn pri" id="a-gh" type="button">🌐 نشر مباشر على GitHub Pages</button>')+'</div></div></section>';
  $("out").innerHTML=h}
 function parseX(rows){const days=Array.from({length:7},()=>({m:[],e:[],n:[],off:"",x:{}})),map={"پێشوازی":"ins","استعلامات":"ins","پارک داخلي":"pin","پارک خارجي":"pout","هەردوو پارك":"sub","بدلي الپارکين":"sub","درج كافتريا":"cafe","پارک (دوام جزئي)":"part","هەردوو پارک":"part"};let sh=null;
  for(const r of rows){const a=String(r[0]||"").trim();if(!a)continue;
@@ -1083,21 +1083,22 @@ async function ghCheck(t){try{const r=await fetch("https://api.github.com/repos/
 async function ghToken(force){let t=force?"":(ST.get("gh_tok")||"");if(t)return t;
  const p=ask("🔑 رمز GitHub (مرة واحدة فقط)","الصق الرمز (Fine-grained token) بصلاحية Contents: Read and write للمستودع "+GH.r+" فقط. يُحفظ في هذا الجهاز فقط ولا يُكتب داخل الموقع.",{text:1,ok:"حفظ الرمز",check:ghCheck});
  $("l1").maxLength=400;const v=await p;if(!v||v==="forgot")return"";t=v.trim();ST.set("gh_tok",t);return t}
+async function ghErr(r,w){let g="";try{g=(await r.json()).message||""}catch(e){}const e=new Error(w+" "+r.status+(g?": "+g:""));e.status=r.status;e.gh=g;return e}
 async function ghPush(html,tok){const H=ghHead(tok),base="https://api.github.com/repos/"+GH.o+"/"+GH.r;
- const rr=await fetch(base,{headers:H});if(!rr.ok){const e=new Error("repo "+rr.status);e.status=rr.status;throw e}
+ const rr=await fetch(base,{headers:H});if(!rr.ok)throw await ghErr(rr,"repo");
  const br=(await rr.json()).default_branch,u=base+"/contents/"+GH.p;
  const g=await fetch(u+"?ref="+encodeURIComponent(br),{headers:H});let sha;
- if(g.ok)sha=(await g.json()).sha;else if(g.status!==404){const e=new Error("get "+g.status);e.status=g.status;throw e}
- const body={message:"تحديث الجدول "+new Date().toISOString().slice(0,16).replace("T"," "),content:ghB64(html),branch:br};if(sha)body.sha=sha;
+ if(g.ok)sha=(await g.json()).sha;else if(g.status!==404)throw await ghErr(g,"get");
+ const body={message:"update schedule "+new Date().toISOString().slice(0,16).replace("T"," "),content:ghB64(html),branch:br};if(sha)body.sha=sha;
  const pr=await fetch(u,{method:"PUT",headers:Object.assign({"Content-Type":"application/json"},H),body:JSON.stringify(body)});
- if(!pr.ok){const e=new Error("put "+pr.status);e.status=pr.status;throw e}return true}
-async function pub(){const m=$("amsg")||{};m.textContent="جارٍ الحفظ…";try{const art=SA?null:await claude.use("artifact");if(!SA&&!art){m.textContent="النشر غير متاح لهذا الحساب";return}
+ if(!pr.ok)throw await ghErr(pr,"put");return br}
+async function pub(force){const GM=SA||force;const m=$("amsg")||{};m.textContent="جارٍ الحفظ…";try{const art=GM?null:await claude.use("artifact");if(!GM&&!art){m.textContent="النشر غير متاح لهذا الحساب";return}
  const data=JSON.stringify({cycle:ED.cycle,tpl:ED.tpl,ov:ED.ov,pin:ED.pin,rc:ED.rc,names:ED.names,hrs:ED.hrs||{},pts:ED.pts}).replace(/</g,"\\u003c");
  const out=SRC.replace(/(<script id="data" type="application\/json">)[\s\S]*?(<\/script>)/,(x,a,b)=>a+data+b);
- if(SA){const tok=await ghToken(false);
-  if(tok){try{m.textContent="⏳ جارٍ النشر على الموقع…";await ghPush(out,tok);snd("ok");m.textContent="✔ تم الحفظ والنشر مباشرة على الموقع — يظهر للجميع خلال دقيقة أو دقيقتين";toast("✅ تم النشر على الموقع");return}
-   catch(e){if(e.status===401||e.status===403||e.status===404){ST.set("gh_tok","");m.textContent="⚠ الرمز مرفوض ("+e.status+") — اضغط حفظ مرة أخرى لإدخال رمز جديد";snd("err");return}
-    m.textContent="⚠ تعذّر النشر المباشر ("+(e.message||"خطأ")+") — تم تنزيل نسخة احتياطية بدلاً منه"}}
+ if(GM){const tok=await ghToken(false);
+  if(tok){try{m.textContent="⏳ جارٍ النشر على الموقع…";const br=await ghPush(out,tok);snd("ok");m.textContent="✔ تم الحفظ والنشر مباشرة على الفرع «"+br+"» — يظهر على الموقع خلال دقيقة أو دقيقتين";toast("✅ تم النشر على الموقع");return}
+   catch(e){const net=!e.status;if(e.status===401){ST.set("gh_tok","")}
+    m.textContent="⚠ فشل النشر المباشر — "+(net?"لا يوجد اتصال بـ GitHub ("+(e.message||"network")+")":e.message)+(e.status===401?" · الرمز مرفوض، اضغط حفظ لإدخال رمز جديد":e.status===403||e.status===404?" · تأكد أن الرمز له Contents: Read and write على المستودع "+GH.r:e.status===422||e.status===409?" · تعارض، أعد المحاولة":"");toast("⚠ لم يتم النشر المباشر");snd("err");return}}
   else if(!m.textContent.startsWith("⚠"))m.textContent="لم يُدخل رمز GitHub — تم تنزيل الملف فقط";
   const a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["\ufeff"+out],{type:"text/html;charset=utf-8"}));a.download="index.html";document.body.appendChild(a);a.click();a.remove();snd("ok");if(!$("amsg"))toast("تم تنزيل الملف المحدّث.");return}
  snd("ok");await art.publish(out)}catch(e){m.textContent="تعذّر الحفظ: "+(e.code||e.message||e)}}
@@ -1164,7 +1165,7 @@ $("out").addEventListener("click",e=>{if(!ED)return;const b=e.target.closest("bu
   else if(b.id==="a-hr"){HR=!HR;adm()}
   else if(b.id==="hr-x"){HR=false;adm()}
   else if(b.id==="hr-ok"){const o={};let bad=false;document.querySelectorAll("[data-hr]").forEach(i=>{const v=i.value.trim();if(!v)bad=true;o[i.dataset.hr]=v});if(bad){$("amsg")&&($("amsg").textContent="هەمی دەمژمێران پڕ بکە");return}ED.hrs=Object.assign(ED.hrs||{},o);hrSet(o);HR=false;adm();$("amsg").textContent="✔ دەمژمێر هاتنە گوهۆڕین — پاشکەفت (حفظ) بکە بۆ جێگیرکرنێ"}
-  else if(b.id==="a-x"){hrSet(HRD);HR=false;day(cur)}else if(b.id==="a-save")pub()});
+  else if(b.id==="a-x"){hrSet(HRD);HR=false;day(cur)}else if(b.id==="a-save")pub();else if(b.id==="a-gh")pub(true)});
 $("out").addEventListener("change",e=>{if(!ED)return;const t=e.target;
  if(t.dataset.nf){NF[t.dataset.nf]=t.value}else if(t.dataset.add){const v=t.value.trim(),k=t.dataset.add;if(!v)return;const d=cd(true),a=L(gf(d,k));if(!a.includes(v))a.push(v);sf(d,k,a.join(","));adm();const n=document.querySelector(`[data-add="${k}"]`);if(n)n.focus()}
  else if(t.id==="a-start"){if(t.value){const dt=pD(t.value);dt.setDate(dt.getDate()-(dt.getDay()+1)%7);ED.cycle.start=iso(dt)}adm()}

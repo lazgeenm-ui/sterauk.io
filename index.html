@@ -137,6 +137,25 @@ body.adm-on .tabs{display:none}
 #menu{position:absolute;left:0;top:calc(100% + 6px);z-index:30;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--sh);padding:6px;min-width:220px;display:grid}
 #menu[hidden]{display:none}#menu button{border:0;background:transparent;text-align:right;padding:12px;border-radius:10px;cursor:pointer;font-size:15px}#menu button:hover,#menu button:focus-visible{background:var(--bg)}
 #weeks{align-items:center;gap:6px;padding-bottom:4px}.wl{font-size:13px;color:var(--mute);margin-inline-end:4px;flex:0 0 auto}
+.wb{flex:0 0 auto;height:34px;padding:0 12px;border:0;border-radius:999px;color:#fff;font-weight:900;font-size:13px;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:5px;background:linear-gradient(90deg,#e11d48,#ff8a00,#ffd000,#22c55e,#1f4fd8,#7a3fd0,#e11d48);background-size:400% 100%;text-shadow:0 1px 2px rgba(0,0,0,.45);animation:wbc 3s linear infinite,wbm 1.1s ease-in-out infinite;box-shadow:0 0 0 0 rgba(225,29,72,.7)}
+@keyframes wbc{to{background-position:400% 0}}
+@keyframes wbm{0%,100%{transform:scale(1) translateX(0);box-shadow:0 0 0 0 rgba(225,29,72,.65)}25%{transform:scale(1.08) translateX(-3px)}50%{transform:scale(1.12) translateX(3px);box-shadow:0 0 0 9px rgba(225,29,72,0)}75%{transform:scale(1.06) translateX(-2px)}}
+@media (prefers-reduced-motion:reduce){.wb{animation:wbc 6s linear infinite}}
+.lb2.wnd{padding:0;gap:0;width:min(420px,94vw);overflow:auto;border:1px solid rgba(122,63,208,.35);background:radial-gradient(120% 60% at 100% 0,rgba(255,138,0,.16),transparent 60%),radial-gradient(120% 60% at 0 100%,rgba(31,79,216,.18),transparent 60%),var(--card);box-shadow:0 20px 60px rgba(60,40,160,.35)}
+.wnd .wnh{display:flex;align-items:center;gap:10px;padding:16px 18px;background:linear-gradient(120deg,#e11d48,#ff8a00 55%,#ffb020);color:#fff;font-size:19px;font-weight:900;text-shadow:0 1px 2px rgba(0,0,0,.35)}
+.wnd .wnh i{font-style:normal;font-size:26px;display:inline-block;animation:wnr 2.2s ease-in-out infinite}
+.wnd .wnc{display:grid;gap:10px;padding:16px 16px 6px}
+.wnd .wni{margin:0;font-weight:800;font-size:15.5px;line-height:1.9;color:var(--ink)}
+.wnd .wnl{margin:0;padding:11px 14px;border-radius:14px;background:rgba(255,255,255,.55);border:1px solid var(--line);border-inline-start:5px solid var(--c,#1f4fd8);font-size:15px;line-height:1.9;color:var(--ink);box-shadow:0 3px 10px rgba(31,79,216,.08)}
+:root[data-theme="dark"] .wnd .wnl{background:rgba(255,255,255,.06)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .wnd .wnl{background:rgba(255,255,255,.06)}}
+.wnd .wnf{margin:2px 0 0;text-align:center;font-weight:800;color:var(--pri);letter-spacing:.3px}
+.wnd .wna{padding:10px 16px 16px;display:grid}
+@media (prefers-reduced-motion:reduce){.wnd .wnh i{animation:none}}
+.wn{width:38px;height:38px;border-radius:50%;border:1px solid #ffb020;background:var(--eb);color:var(--ef);font-size:18px;cursor:pointer;flex:0 0 auto;padding:0;line-height:1;display:inline-flex;align-items:center;justify-content:center;animation:wnr 2.2s ease-in-out infinite}
+@keyframes wnr{0%,100%{transform:rotate(0)}10%{transform:rotate(14deg)}20%{transform:rotate(-12deg)}30%{transform:rotate(8deg)}40%{transform:rotate(0)}}
+.wnb{display:grid;gap:8px;font-size:15px;line-height:1.9}.wnb p{margin:0}
+@media (prefers-reduced-motion:reduce){.wn{animation:none}}
 .wp{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--card);font-weight:700;cursor:pointer;position:relative;flex:0 0 auto}
 .wp[aria-pressed="true"]{background:linear-gradient(135deg,#1f4fd8,#7a3fd0);color:#fff;border-color:transparent}
 .wp.today::after{content:"";position:absolute;top:2px;inset-inline-start:2px;width:8px;height:8px;border-radius:50%;background:#22a06b}
@@ -622,12 +641,24 @@ const allNames=S=>[...new Set([...S.tpl.flat(),...Object.values(S.ov)].flatMap(d
 const NAMES=allNames({tpl:DB.tpl,ov:DB.ov,names:DB.names});
 $("names").innerHTML=NAMES.map(n=>`<option value="${esc1(n)}">`).join("");
 addEventListener("offline",()=>toast("📴 بدون إنترنت — الجدول يعمل بشكل طبيعي"));addEventListener("online",()=>toast("🌐 عاد الاتصال بالإنترنت"));
-document.addEventListener("click",e=>{const a=e.target.closest&&e.target.closest('a[href^="https://"]');if(a&&navigator.onLine===false){e.preventDefault();toast("📴 هذا الرابط يحتاج إنترنت")}},true);
+document.addEventListener("click",e=>{const wn_=e.target.closest("[data-wn]");if(wn_){wnSound();if(wn_.classList.contains("wb"))setTimeout(wnSpeak,1100);const o=dlg(`<div class="wnh"><i>🔔</i><span>ئاگەهداری</span></div><div class="wnc"><p class="wni">1- ئاگەهداریا جەنابێ هنگوو دکەن کو چەند گورین هاتینە کرن:</p><p class="wnl" style="--c:#1f4fd8">• صلاح نوري هاتە ڤەگوهاست ل جهێ حمید ابراهیم ل پێشوازی (استعلامات).</p><p class="wnl" style="--c:#7a3fd0">• محمد بروار بو روژ هاتە ڤەگوهاستن، ل جهێ وی هکار هاتە دانان.</p><p class="wnl" style="--c:#22a06b">• حمید ابراهیم بو بینایەتێ ستێر بو شوفێریێ هاتە دانان.</p><p class="wnf">............... دگەل رێزو ئیحتراما مە</p></div><div class="wna"><button class="btn pri" type="button" id="wn-x">✖ داخستن</button></div>`);o.firstElementChild.classList.add("wnd");o.querySelector("#wn-x").onclick=()=>{wnStop();o.remove()};o.addEventListener("click",e=>{if(e.target===o)wnStop()});return}
+ const a=e.target.closest&&e.target.closest('a[href^="https://"]');if(a&&navigator.onLine===false){e.preventDefault();toast("📴 هذا الرابط يحتاج إنترنت")}},true);
 const hideKb=el=>{const f=()=>{try{(el||document.activeElement).blur()}catch(e){}};f();setTimeout(f,60);setTimeout(f,250)};
 const isNm=v=>NAMES.includes(v)||[...($("names")||{options:[]}).options].some(o=>o.value===v);
 ["input","change"].forEach(ev=>document.addEventListener(ev,e=>{const t=e.target;if(t&&t.tagName==="INPUT"&&t.getAttribute("list")==="names"&&t.id!=="n-new"&&isNm(t.value.trim()))hideKb(t)},true));
 function toast(t){const e=$("toast");e.textContent=t;e.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>e.hidden=true,4500)}
 let AC,SND=ST.get("snd")!=="0";
+const WNTXT="ئاگەهداریا جەنابێ هنگوو دکەن کو چەند گورین هاتینە کرن. صلاح نوري هاتە ڤەگوهاست ل جهێ حمید ابراهیم ل پێشوازی، استعلامات. محمد بروار بو روژ هاتە ڤەگوهاستن، ل جهێ وی هکار هاتە دانان. حمید ابراهیم بو بینایەتێ ستێر بو شوفێریێ هاتە دانان. دگەل رێزو ئیحتراما مە.";
+try{if("speechSynthesis" in window)speechSynthesis.getVoices()}catch(e){}
+function wnVoice(){const v=speechSynthesis.getVoices(),L=x=>(x.lang||"").toLowerCase().replace("_","-"),fem=/female|woman|zira|hoda|salma|laila|leila|zariyah|amira|noura|fatima|hala|sara|yelda|filiz|emel/i;
+return v.find(x=>/^(ku|ckb|kmr)/.test(L(x)))||v.find(x=>L(x).startsWith("ar")&&fem.test(x.name))||v.find(x=>L(x).startsWith("ar"))||v.find(x=>L(x).startsWith("fa")&&fem.test(x.name))||v.find(x=>L(x).startsWith("tr")&&fem.test(x.name))||null}
+function wnSpeak(){if(!("speechSynthesis" in window))return false;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(WNTXT),v=wnVoice();if(v){u.voice=v;u.lang=v.lang}else u.lang="ar-SA";u.rate=.88;u.pitch=1.2;u.volume=1;speechSynthesis.speak(u);return true}catch(e){return false}}
+function wnStop(){try{speechSynthesis.cancel()}catch(e){}}
+function wnSound(){if(!SND)return;try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();if(AC.state==="suspended")AC.resume();const t0=AC.currentTime+.03,m=AC.createGain(),dl=AC.createDelay(),fb=AC.createGain(),wet=AC.createGain();m.gain.value=.7;dl.delayTime.value=.18;fb.gain.value=.25;wet.gain.value=.2;m.connect(AC.destination);m.connect(dl);dl.connect(fb);fb.connect(dl);dl.connect(wet);wet.connect(AC.destination);
+const n=(f,st,d,v)=>{const o=AC.createOscillator(),e=AC.createGain();o.type="sine";o.frequency.value=f;e.gain.setValueAtTime(.0001,t0+st);e.gain.linearRampToValueAtTime(v,t0+st+.02);e.gain.exponentialRampToValueAtTime(.0001,t0+st+d);o.connect(e);e.connect(m);o.start(t0+st);o.stop(t0+st+d+.05)};
+const bell=(f,st,v)=>{n(f,st,1,v);n(f*2,st,.6,v*.3)};
+/* short soft two-note bell */
+bell(1318.5,0,.16);bell(1046.5,.28,.13)}catch(e){}}
 function snd(t){if(!SND)return;try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();if(AC.state==="suspended")AC.resume();
 if(!snd.m){const m=AC.createGain(),lp=AC.createBiquadFilter(),dl=AC.createDelay(),fb=AC.createGain(),wt=AC.createGain();m.gain.value=.55;lp.type="lowpass";lp.frequency.value=5200;dl.delayTime.value=.11;fb.gain.value=.28;wt.gain.value=.3;m.connect(lp);lp.connect(AC.destination);lp.connect(dl);dl.connect(fb);fb.connect(dl);dl.connect(wt);wt.connect(AC.destination);snd.m=m}
 const n=AC.currentTime,
@@ -649,7 +680,7 @@ const SI={m:["🌅","صباحي"],e:["🌇","مسائي"],n:["🌙","ليلي"]}
 const syncP=a=>{if(!a||!a.length)return;P.length=0;PI.length=0;a.forEach(([n,i])=>{P.push(n);PI.push(i||"📍")});HPM=null};syncP(DB.pts);
 const skipN=(k,p,ds,j)=>(k==="n"&&p==="پێشوازی (استعلامات)")||(!!ds&&j!==undefined&&[].concat(ds).every(x=>(x.hp||[]).includes(j)));
 const PIC=p=>{const j=P.indexOf(p);return j>=0?PI[j]+" ":""},TMS=k=>{const q=SH.find(z=>z[0]===k);return q?q[3]:""};
-function wk(){const xb=$("xlsb");if(xb)xb.textContent="📊 دروست كرن ئسبوعا کامل "+wno(W)+" إلى Excel · "+rgn(W,DB.month);$("mtitle").textContent="📅 "+PT();if(!$("cal").hidden)cal();$("weeks").innerHTML='<span class="wl">الأسبوع</span>'+Array.from({length:nW(DB.month)},(_,w)=>`<button class="wp${RS==="in"&&w===curW?" today":""}" data-w="${w}" aria-pressed="${w===W}" aria-label="الأسبوع ${wno(w)}" title="${rgn(w,DB.month)}" type="button">${wno(w)}</button>`).join("")}
+function wk(){const xb=$("xlsb");if(xb)xb.textContent="📊 دروست كرن ئسبوعا کامل "+wno(W)+" إلى Excel · "+rgn(W,DB.month);$("mtitle").textContent="📅 "+PT();if(!$("cal").hidden)cal();$("weeks").innerHTML='<span class="wl">الأسبوع</span>'+Array.from({length:nW(DB.month)},(_,w)=>`<button class="wp${RS==="in"&&w===curW?" today":""}" data-w="${w}" aria-pressed="${w===W}" aria-label="الأسبوع ${wno(w)}" title="${rgn(w,DB.month)}" type="button">${wno(w)}</button>${wno(w)===5?`<button class="wb" data-wn="1" type="button" aria-label="ئاگەهداری">🚨 ئاگەهداری</button>`:""}`).join("")}
 function tabs(){wk();$("tabs").innerHTML=ord(W,DB.month).map(k=>{const x=wdx(W,k);return`<button class="tab${RS==="in"&&W===curW&&k===curK?" today":""}" data-i="${k}" aria-pressed="${k===cur&&!sel}" aria-label="${DN[x][0]} ${dtOf(W,k).getDate()}" type="button">${DN[x][0].replace(/^ال/,"")}<b>${dtOf(W,k).getDate()}</b></button>`}).join("")}
 function day(i){MM=null;cur=i;sel="";ED=null;syncP(DB.pts);document.body.classList.remove("adm-on");tabs();
  const d=G(W,i),x=wdx(W,i),dt=dtOf(W,i),lv=live(),LV=!!lv&&lv.w===W&&lv.k===i,sc=SH.find(s=>s[0]===(lv&&lv.s));

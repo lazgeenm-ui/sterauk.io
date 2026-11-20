@@ -1254,10 +1254,10 @@ input[type=search]{-webkit-appearance:none;appearance:none}
 </style>
 <style id="info-ticker-css">
 .info{display:flex;align-items:stretch;margin:6px 0 10px;border:1px solid var(--line);border-radius:14px;background:var(--card);box-shadow:var(--sh);overflow:hidden}
-.info-t{flex:none;display:flex;align-items:center;gap:6px;padding:8px 14px;background:linear-gradient(135deg,#c0213f,#e8590c);color:#fff;font-weight:800;font-size:14px;white-space:nowrap}
-.info-v{flex:1;min-width:0;overflow:hidden;display:flex;align-items:center;position:relative}
-.info-m{display:inline-flex;white-space:nowrap;will-change:transform;animation:infoscroll 38s linear infinite}
-.info-m span{padding:8px 40px;font-size:14px;font-weight:700;color:var(--ink)}
+.info-t{flex:none;display:flex;align-items:center;gap:6px;padding:8px 14px;background:linear-gradient(135deg,#b3162f,#d93a0b);color:#fff;font-weight:800;font-size:14px;white-space:nowrap}
+.info-v{flex:1;min-width:0;overflow:hidden;display:flex;align-items:center;position:relative;background:linear-gradient(90deg,#ff9a1f,#ff7a00,#ff9a1f)}
+.info-m{display:inline-flex;white-space:nowrap;will-change:transform;animation:infoscroll 18s linear infinite}
+.info-m span{padding:9px 40px;font-size:15px;font-weight:700;color:#fff;text-shadow:0 1px 3px rgba(120,50,0,.45);letter-spacing:.2px}
 .info:hover .info-m,.info:focus-within .info-m{animation-play-state:paused}
 @keyframes infoscroll{from{transform:translateX(0)}to{transform:translateX(50%)}}
 @media (prefers-reduced-motion:reduce){.info-m{animation:none;white-space:normal;display:block}.info-m span:nth-child(2){display:none}.info-m span{display:block;padding:8px 12px}}
